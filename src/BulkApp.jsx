@@ -319,30 +319,36 @@ export default function BulkApp() {
     });
     const [ticked, setTicked] = useState({});
     return (
-      <div style={{ padding:"0 16px" }}>
-        <div style={{ padding:"24px 0 20px" }}>
-          <div className="text-sm text-muted font-mono tracking-wide">WEEKLY</div>
-          <div className="text-2xl font-display font-bold text-main" style={{ marginTop:"4px" }}>Shopping List 🛒</div>
-          <div className="text-base text-muted" style={{ marginTop:"4px" }}>Auto-generated from your 7-day plan</div>
+      <div className="pb-32 px-5 pt-8 bg-[#11111A] min-h-screen text-white font-sans selection:bg-cyan-500/30">
+        <div className="mb-8">
+          <p className="text-zinc-500 text-xs font-bold tracking-widest uppercase mb-1">Weekly</p>
+          <h1 className="text-[28px] font-bold tracking-tight text-white leading-tight">Shopping List 🛒</h1>
+          <p className="text-zinc-400 text-sm mt-0.5">Auto-generated from your 7-day plan</p>
         </div>
+        
         {Object.entries(grouped).map(([cat, items]) => items.length === 0 ? null : (
-          <div key={cat} style={{ marginBottom:"16px" }}>
-            {lbl(cat)}
-            {card(<>
+          <div key={cat} className="mb-6">
+            <p className="text-xs text-zinc-500 font-bold tracking-widest uppercase mb-3">{cat}</p>
+            <div className="bg-[#1C1C26] rounded-3xl p-5 border border-white/5 shadow-xl">
               {[...new Set(items)].map((item, i, arr) => (
                 <div key={item} onClick={() => setTicked(p => ({...p,[item]:!p[item]}))}
-                  className="flex items-center gap-3"
-                  style={{ padding:"12px 0", borderBottom: i<arr.length-1?`1px solid var(--border-light)`:"none", cursor:"pointer", transition:"all 0.2s" }}>
-                  <div className="flex items-center justify-center text-xs" style={{ width:"20px", height:"20px", borderRadius:"6px", border:`2px solid ${ticked[item]?'var(--green)':'var(--border-color)'}`, background:ticked[item]?'var(--green)':"transparent", flexShrink:0, transition:"all 0.2s" }}>
-                    {ticked[item] && <span style={{ color:"var(--bg-primary)" }}>✓</span>}
+                  className={`flex items-center gap-3 py-3 cursor-pointer transition-all duration-200 ${i < arr.length - 1 ? 'border-b border-white/5' : ''}`}
+                >
+                  <div className={`flex items-center justify-center w-6 h-6 rounded-lg border-2 flex-shrink-0 transition-all duration-300 ${ticked[item] ? 'bg-[#4BFF75] border-[#4BFF75] shadow-[0_0_10px_rgba(75,255,117,0.3)]' : 'border-zinc-600 bg-transparent'}`}>
+                    {ticked[item] && <Check size={14} className="text-black" strokeWidth={3} />}
                   </div>
-                  <span className={`text-base ${ticked[item]?'text-muted':'text-main'}`} style={{ textDecoration:ticked[item]?"line-through":"none", textTransform:"capitalize", transition:"all 0.2s" }}>{item}</span>
+                  <span className={`text-[15px] font-medium capitalize transition-all duration-200 ${ticked[item] ? 'text-zinc-500 line-through' : 'text-white'}`}>
+                    {item}
+                  </span>
                 </div>
               ))}
-            </>)}
+            </div>
           </div>
         ))}
-        <button onClick={() => setTicked({})} className="btn-secondary w-full" style={{ marginBottom:"24px" }}>Clear all ticks</button>
+        
+        <button onClick={() => setTicked({})} className="w-full py-4 mt-2 rounded-2xl bg-[#1C1C26] text-zinc-400 font-medium border border-white/5 shadow-lg active:scale-95 transition-all duration-200">
+          Clear all ticks
+        </button>
       </div>
     );
   };
@@ -376,106 +382,127 @@ export default function BulkApp() {
     const projPath = realCount > 0 ? pts.slice(realCount-1).map((p,i)=>`${i===0?"M":"L"} ${p.x} ${p.y}`).join(" ") : "";
 
     return (
-      <div style={{ padding:"0 16px" }}>
-        <div style={{ padding:"24px 0 20px" }}>
-          <div className="text-sm text-muted font-mono tracking-wide">PROGRESS</div>
-          <div className="text-2xl font-display font-bold text-main" style={{ marginTop:"4px" }}>Weight Log ⚖️</div>
+      <div className="pb-32 px-5 pt-8 bg-[#11111A] min-h-screen text-white font-sans selection:bg-cyan-500/30">
+        <div className="mb-8">
+          <p className="text-zinc-500 text-xs font-bold tracking-widest uppercase mb-1">Progress</p>
+          <h1 className="text-[28px] font-bold tracking-tight text-white leading-tight">Weight Log ⚖️</h1>
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px", marginBottom:"20px" }}>
+        
+        <div className="grid grid-cols-2 gap-4 mb-6">
           {[
-            { label:"Start", val:`${startWeight.toFixed(1)} kg`, color:'var(--text-muted)' },
-            { label:"Current", val:`${latest} kg`, color:'var(--yellow)' },
-            { label:"Total gain", val:`${gain >= 0 ? '+' : ''}${gain} kg`, color:gain >= 0 ? 'var(--green)' : 'var(--red)' },
-            { label:"Weeks logged", val:`${weights.length}`, color:'var(--accent)' },
+            { label:"Start", val:`${startWeight.toFixed(1)} kg`, color:'text-zinc-400' },
+            { label:"Current", val:`${latest} kg`, color:'text-[#4BFF75]' },
+            { label:"Total gain", val:`${gain >= 0 ? '+' : ''}${gain} kg`, color:gain >= 0 ? 'text-[#00F0FF]' : 'text-red-400' },
+            { label:"Weeks logged", val:`${weights.length}`, color:'text-white' },
           ].map((s,i)=>(
-            <div key={i} className="glass-panel" style={{ padding:"16px" }}>
-              <div className="text-xs text-muted" style={{ marginBottom:"6px" }}>{s.label}</div>
-              <div className="text-xl font-bold" style={{ color:s.color }}>{s.val}</div>
+            <div key={i} className="bg-[#1C1C26] rounded-3xl p-5 border border-white/5 shadow-xl">
+              <div className="text-xs text-zinc-500 font-medium mb-1">{s.label}</div>
+              <div className={`text-2xl font-bold ${s.color}`}>{s.val}</div>
             </div>
           ))}
         </div>
 
-        {weeksLeft && card(<>
-          <div className="text-base font-semibold text-soft" style={{ marginBottom:"6px" }}>📈 Projection to 65 kg</div>
-          <div className="text-sm text-green">At current pace (~{rate.toFixed(2)}kg/week)</div>
-          <div className="text-xl font-bold text-accent" style={{ marginTop:"4px", textShadow:"0 0 10px var(--accent-glow)" }}>You'll hit 65 kg in ~{weeksLeft} weeks</div>
-          <div className="text-xs text-muted" style={{ marginTop:"4px" }}>Keep the surplus going 💪</div>
-        </>)}
+        {weeksLeft && (
+          <div className="bg-gradient-to-r from-[#00F0FF]/10 to-[#4BFF75]/10 rounded-3xl p-5 mb-6 border border-[#00F0FF]/20 shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#00F0FF]/20 rounded-full blur-3xl -mr-10 -mt-10"></div>
+            <div className="text-sm font-bold text-white mb-1">📈 Projection to 65 kg</div>
+            <div className="text-[11px] text-zinc-400 font-medium mb-3">At current pace (~{rate.toFixed(2)}kg/week)</div>
+            <div className="text-[17px] font-bold text-[#00F0FF] mb-1 drop-shadow-[0_0_8px_rgba(0,240,255,0.4)]">You'll hit 65 kg in ~{weeksLeft} weeks</div>
+            <div className="text-xs text-[#4BFF75] font-medium">Keep the surplus going 💪</div>
+          </div>
+        )}
 
-        {card(<>
-          <div className="text-base font-semibold text-soft" style={{ marginBottom:"12px" }}>Weight chart (kg) <span className="text-xs text-muted font-normal">— dashed = projected</span></div>
-          <svg width="100%" viewBox={`0 0 ${chartW+40} ${chartH+20}`} style={{ filter:"drop-shadow(0 4px 6px rgba(0,0,0,0.3))" }}>
-            {realPath && <path d={realPath} fill="none" stroke="var(--accent)" strokeWidth="3" strokeLinecap="round" style={{ filter:"drop-shadow(0 0 4px var(--accent-glow))" }}/>}
-            {projPath && <path d={projPath} fill="none" stroke="var(--purple)" strokeWidth="2.5" strokeDasharray="6 5" strokeLinecap="round"/>}
+        <div className="bg-[#1C1C26] rounded-3xl p-5 mb-8 border border-white/5 shadow-xl">
+          <div className="text-sm font-bold text-white mb-4">Weight chart (kg) <span className="text-[10px] text-zinc-500 font-normal">— dashed = projected</span></div>
+          <svg width="100%" viewBox={`0 0 ${chartW+40} ${chartH+20}`} className="drop-shadow-lg overflow-visible">
+            {realPath && <path d={realPath} fill="none" stroke="#00F0FF" strokeWidth="3" strokeLinecap="round" style={{ filter:"drop-shadow(0 0 6px rgba(0,240,255,0.5))" }}/>}
+            {projPath && <path d={projPath} fill="none" stroke="#FF2A7A" strokeWidth="2" strokeDasharray="5 5" strokeLinecap="round" opacity={0.6}/>}
             {pts.map((p,i)=>(
               <g key={i}>
-                <circle cx={p.x} cy={p.y} r={i<realCount?4.5:3.5} fill={i<realCount?'var(--accent)':'var(--purple)'} opacity={i<realCount?1:0.7}/>
-                <text x={p.x} y={chartH+16} textAnchor="middle" fontSize="9" fill="var(--text-muted)">{allPoints[i].date}</text>
-                {i<realCount && <text x={p.x} y={p.y-10} textAnchor="middle" fontSize="10" fill="var(--text-soft)" fontWeight="600">{allPoints[i].weight}</text>}
+                <circle cx={p.x} cy={p.y} r={i<realCount?5:3.5} fill={i<realCount?'#00F0FF':'#FF2A7A'} opacity={i<realCount?1:0.7} className={i<realCount ? "drop-shadow-[0_0_5px_rgba(0,240,255,0.8)]" : ""}/>
+                <text x={p.x} y={chartH+18} textAnchor="middle" fontSize="9" fill="#71717A" fontWeight="500">{allPoints[i].date}</text>
+                {i<realCount && <text x={p.x} y={p.y-10} textAnchor="middle" fontSize="10" fill="#FFFFFF" fontWeight="bold">{allPoints[i].weight}</text>}
               </g>
             ))}
           </svg>
-        </>)}
-
-        {lbl("LOG THIS WEEK")}
-        <div className="flex gap-2" style={{ marginBottom:"20px" }}>
-          <input value={newWeight} onChange={e=>setNewWeight(e.target.value)} placeholder="e.g. 56.5" type="number" step="0.1"
-            className="input-field w-full" />
-          <button onClick={addWeight} className="btn-primary">Log</button>
         </div>
-        {lbl("HISTORY")}
-        {[...weights].reverse().map((w,i)=>(
-          <div key={i} className="flex justify-between items-center" style={{ padding:"12px 0", borderBottom:`1px solid var(--border-light)` }}>
-            <span className="text-sm text-muted">{w.date}</span>
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-semibold text-main">{w.weight} kg</span>
-              <button onClick={() => setWeights(weights.filter((_, idx) => idx !== weights.length - 1 - i))} className="btn-secondary" style={{ padding:"4px 8px", fontSize:"16px", color:"var(--red)", border:"none", background:"transparent" }}>×</button>
+
+        <p className="text-xs text-zinc-500 font-bold tracking-widest uppercase mb-3">Log This Week</p>
+        <div className="flex gap-2 mb-8">
+          <input value={newWeight} onChange={e=>setNewWeight(e.target.value)} placeholder="e.g. 56.5" type="number" step="0.1"
+            className="flex-1 bg-[#1C1C26] border border-white/10 rounded-2xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-[#00F0FF]/50 transition-colors" />
+          <button onClick={addWeight} className="bg-[#00F0FF] text-black font-bold px-6 py-3 rounded-2xl shadow-[0_0_15px_rgba(0,240,255,0.3)] active:scale-95 transition-transform">Log</button>
+        </div>
+        
+        <p className="text-xs text-zinc-500 font-bold tracking-widest uppercase mb-3">History</p>
+        <div className="bg-[#1C1C26] rounded-3xl p-5 border border-white/5 shadow-xl">
+          {[...weights].reverse().map((w,i)=>(
+            <div key={i} className={`flex justify-between items-center py-3 ${i !== weights.length - 1 ? 'border-b border-white/5' : ''}`}>
+              <span className="text-sm text-zinc-400 font-medium">{w.date}</span>
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-bold text-white">{w.weight} kg</span>
+                <button onClick={() => setWeights(weights.filter((_, idx) => idx !== weights.length - 1 - i))} className="w-6 h-6 flex items-center justify-center rounded-full bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors">×</button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+          {weights.length === 0 && <div className="text-sm text-zinc-500 text-center py-2">No logs yet</div>}
+        </div>
       </div>
     );
   };
 
   // ── WATER PAGE ───────────────────────────────────────────────────────────
   const WaterPage = () => (
-    <div style={{ padding:"0 16px" }}>
-      <div style={{ padding:"24px 0 20px" }}>
-        <div className="text-sm text-muted font-mono tracking-wide">HYDRATION</div>
-        <div className="text-2xl font-display font-bold text-main" style={{ marginTop:"4px" }}>Water Tracker 💧</div>
+    <div className="pb-32 px-5 pt-8 bg-[#11111A] min-h-screen text-white font-sans selection:bg-cyan-500/30">
+      <div className="mb-8">
+        <p className="text-zinc-500 text-xs font-bold tracking-widest uppercase mb-1">Hydration</p>
+        <h1 className="text-[28px] font-bold tracking-tight text-white leading-tight">Water Tracker 💧</h1>
       </div>
-      <div className="flex flex-col items-center" style={{ marginBottom:"32px" }}>
-        <div style={{ position:"relative", width:"180px", height:"180px" }}>
-          <svg width="180" height="180" viewBox="0 0 180 180">
-            <circle cx="90" cy="90" r="80" fill="none" stroke="var(--bg-tertiary)" strokeWidth="14"/>
-            <circle cx="90" cy="90" r="80" fill="none" stroke="var(--cyan)" strokeWidth="14"
-              strokeDasharray={`${2*Math.PI*80}`}
-              strokeDashoffset={`${2*Math.PI*80*(1-waterPct/100)}`}
-              strokeLinecap="round" transform="rotate(-90 90 90)"
-              className="water-ring" style={{ filter: "drop-shadow(0 0 8px rgba(91, 224, 255, 0.4))" }}/>
+      
+      <div className="flex flex-col items-center mb-10 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[#00F0FF]/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="relative w-52 h-52">
+          <svg width="208" height="208" viewBox="0 0 208 208" className="overflow-visible">
+            <circle cx="104" cy="104" r="90" fill="none" stroke="#1C1C26" strokeWidth="16"/>
+            <circle cx="104" cy="104" r="90" fill="none" stroke="#00F0FF" strokeWidth="16"
+              strokeDasharray={`${2*Math.PI*90}`}
+              strokeDashoffset={`${2*Math.PI*90*(1-waterPct/100)}`}
+              strokeLinecap="round" transform="rotate(-90 104 104)"
+              className="transition-all duration-1000 ease-out drop-shadow-[0_0_10px_rgba(0,240,255,0.5)]"/>
           </svg>
-          <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", textAlign:"center" }}>
-            <div className="font-display font-bold text-cyan" style={{ fontSize:"32px" }}>{todayWater}<span className="text-lg">ml</span></div>
-            <div className="text-sm text-muted">of 3000ml</div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <div className="font-bold text-[#00F0FF] text-4xl mb-1">{todayWater}<span className="text-xl ml-1">ml</span></div>
+            <div className="text-sm text-zinc-400 font-medium">of 3000ml</div>
           </div>
         </div>
-        <div className={`text-base font-semibold ${waterPct>=100?'text-green':'text-muted'}`} style={{ marginTop:"16px" }}>
-          {waterPct>=100?"Goal reached! 🎉":`${3000-todayWater}ml remaining`}
+        <div className={`mt-6 px-4 py-2 rounded-full border backdrop-blur-md font-semibold text-sm transition-colors ${waterPct>=100 ? 'bg-[#4BFF75]/10 text-[#4BFF75] border-[#4BFF75]/30' : 'bg-[#1C1C26] text-zinc-400 border-white/5'}`}>
+          {waterPct>=100 ? "Goal reached! 🎉" : `${Math.max(3000-todayWater, 0)}ml remaining`}
         </div>
       </div>
-      {lbl("QUICK ADD")}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px", marginBottom:"20px" }}>
+      
+      <p className="text-xs text-zinc-500 font-bold tracking-widest uppercase mb-3">Quick Add</p>
+      <div className="grid grid-cols-2 gap-3 mb-6">
         {[150,250,350,500].map(amt=>(
-          <button key={amt} onClick={()=>addWater(amt)} className="btn-secondary">+ {amt}ml</button>
+          <button key={amt} onClick={()=>addWater(amt)} className="bg-[#1C1C26] text-white font-medium py-4 rounded-2xl border border-white/5 shadow-lg active:scale-95 transition-all duration-200 hover:bg-white/5 flex items-center justify-center gap-2">
+            <Droplet size={16} className="text-[#00F0FF]" fill="#00F0FF" fillOpacity={0.4} />
+            + {amt}ml
+          </button>
         ))}
       </div>
-      <button onClick={()=>setWater(prev=>({...prev,[todayKey]:0}))} className="btn-secondary w-full" style={{ border:"none", background:"transparent", marginBottom:"20px" }}>Reset today</button>
-      {card(<>
-        <div className="text-base font-semibold text-soft" style={{ marginBottom:"8px" }}>Hydration tips for bulking</div>
+      
+      <button onClick={()=>setWater(prev=>({...prev,[todayKey]:0}))} className="w-full py-4 rounded-2xl text-zinc-500 font-medium active:scale-95 transition-transform hover:text-white mb-6">
+        Reset today
+      </button>
+      
+      <div className="bg-[#1C1C26] rounded-3xl p-5 border border-white/5 shadow-xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-24 h-24 bg-[#00F0FF]/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+        <div className="text-sm font-bold text-white mb-3">Hydration tips for bulking</div>
         {["Drink 500ml right after waking up","Have a glass before every meal","Sip during gym, not just after","3L/day minimum when bulking hard"].map((t,i)=>(
-          <div key={i} className="text-sm text-muted" style={{ padding:"6px 0", borderBottom:i<3?`1px solid var(--border-light)`:"none" }}>· {t}</div>
+          <div key={i} className={`text-sm text-zinc-400 py-2.5 ${i<3 ? 'border-b border-white/5' : ''}`}>
+            <span className="text-[#00F0FF] mr-2">•</span> {t}
+          </div>
         ))}
-      </>)}
+      </div>
     </div>
   );
 
@@ -491,64 +518,70 @@ export default function BulkApp() {
     const maxCal = Math.max(...plannedDayCals, 1);
 
     return (
-      <div style={{ padding:"0 16px" }}>
-        <div style={{ padding:"24px 0 20px" }}>
-          <div className="text-sm text-muted font-mono tracking-wide">OVERVIEW</div>
-          <div className="text-2xl font-display font-bold text-main" style={{ marginTop:"4px" }}>Weekly Summary 📊</div>
+      <div className="pb-32 px-5 pt-8 bg-[#11111A] min-h-screen text-white font-sans selection:bg-cyan-500/30">
+        <div className="mb-8">
+          <p className="text-zinc-500 text-xs font-bold tracking-widest uppercase mb-1">Overview</p>
+          <h1 className="text-[28px] font-bold tracking-tight text-white leading-tight">Weekly Summary 📊</h1>
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px", marginBottom:"20px" }}>
+        
+        <div className="grid grid-cols-2 gap-4 mb-8">
           {[
-            { label:"Avg protein eaten", val:`${weeklyAvgP}g/day`, color:'var(--green)' },
-            { label:"Avg calories eaten", val:`${weeklyAvgC}/day`, color:'var(--yellow)' },
-            { label:"Current weight", val:`${weights.length > 0 ? weights[weights.length-1].weight : 55} kg`, color:'var(--accent)' },
-            { label:"Target protein", val:"130–150g", color:'var(--text-soft)' },
+            { label:"Avg protein eaten", val:`${weeklyAvgP}g/day`, color:'text-[#4BFF75]' },
+            { label:"Avg calories eaten", val:`${weeklyAvgC}/day`, color:'text-[#FFD166]' },
+            { label:"Current weight", val:`${weights.length > 0 ? weights[weights.length-1].weight : 55} kg`, color:'text-[#00F0FF]' },
+            { label:"Target protein", val:"130–150g", color:'text-white' },
           ].map((s,i)=>(
-            <div key={i} className="glass-panel" style={{ padding:"16px" }}>
-              <div className="text-xs text-muted" style={{ marginBottom:"6px" }}>{s.label}</div>
-              <div className="text-xl font-bold" style={{ color:s.color }}>{s.val}</div>
+            <div key={i} className="bg-[#1C1C26] rounded-3xl p-5 border border-white/5 shadow-xl">
+              <div className="text-xs text-zinc-500 font-medium mb-1">{s.label}</div>
+              <div className={`text-xl font-bold ${s.color}`}>{s.val}</div>
             </div>
           ))}
         </div>
-        {lbl("PROTEIN PER DAY (ACTUAL / PLANNED)")}
-        {card(<>
+
+        <p className="text-xs text-zinc-500 font-bold tracking-widest uppercase mb-3">Protein Per Day (Actual / Planned)</p>
+        <div className="bg-[#1C1C26] rounded-3xl p-5 mb-6 border border-white/5 shadow-xl">
           {actualDayProteins.map((p,i)=>(
-            <div key={i} className="flex items-center gap-3" style={{ marginBottom:"10px" }}>
-              <div className="text-sm text-muted font-mono" style={{ width:"28px" }}>{dayNames[i]}</div>
-              <div className="flex-1" style={{ height:"8px", background:"var(--bg-tertiary)", borderRadius:"99px", overflow:"hidden", position:"relative", boxShadow:"inset 0 1px 3px rgba(0,0,0,0.5)" }}>
-                <div style={{ position:"absolute", height:"100%", width:`${Math.round((plannedDayProteins[i]/maxP)*100)}%`, background:"rgba(255,255,255,0.05)", borderRadius:"99px" }}/>
-                <div className="progress-bar-fill" style={{ position:"absolute", height:"100%", width:`${Math.round((p/maxP)*100)}%`, background:noEggDays.includes(i)?'var(--purple)':'var(--accent)', borderRadius:"99px", boxShadow:`0 0 8px ${noEggDays.includes(i)?'var(--purple)':'var(--accent)'}` }}/>
+            <div key={i} className="flex items-center gap-4 mb-3">
+              <div className="text-sm text-zinc-400 font-medium w-8">{dayNames[i]}</div>
+              <div className="flex-1 h-2 bg-zinc-800 rounded-full relative overflow-hidden">
+                <div className="absolute h-full bg-white/10 rounded-full" style={{ width:`${Math.round((plannedDayProteins[i]/maxP)*100)}%` }}/>
+                <div className={`absolute h-full rounded-full transition-all duration-500 ${noEggDays.includes(i) ? 'bg-[#A78BFA] shadow-[0_0_8px_rgba(167,139,250,0.6)]' : 'bg-[#00F0FF] shadow-[0_0_8px_rgba(0,240,255,0.6)]'}`} style={{ width:`${Math.round((p/maxP)*100)}%` }}/>
               </div>
-              <div className="text-xs text-green font-mono" style={{ width:"60px", textAlign:"right" }}>{p} / {plannedDayProteins[i]}g</div>
+              <div className="text-[11px] text-[#4BFF75] font-bold w-14 text-right">{p} / {plannedDayProteins[i]}g</div>
             </div>
           ))}
-          <div className="text-xs text-muted" style={{ marginTop:"6px" }}>Faint bar = planned target</div>
-        </>)}
-        {lbl("CALORIES PER DAY (ACTUAL / PLANNED)")}
-        {card(<>
+          <div className="text-[10px] text-zinc-500 mt-2">Faint bar = planned target</div>
+        </div>
+
+        <p className="text-xs text-zinc-500 font-bold tracking-widest uppercase mb-3">Calories Per Day (Actual / Planned)</p>
+        <div className="bg-[#1C1C26] rounded-3xl p-5 mb-6 border border-white/5 shadow-xl">
           {actualDayCals.map((c,i)=>(
-            <div key={i} className="flex items-center gap-3" style={{ marginBottom:"10px" }}>
-              <div className="text-sm text-muted font-mono" style={{ width:"28px" }}>{dayNames[i]}</div>
-              <div className="flex-1" style={{ height:"8px", background:"var(--bg-tertiary)", borderRadius:"99px", overflow:"hidden", position:"relative", boxShadow:"inset 0 1px 3px rgba(0,0,0,0.5)" }}>
-                <div style={{ position:"absolute", height:"100%", width:`${Math.round((plannedDayCals[i]/maxCal)*100)}%`, background:"rgba(255,255,255,0.05)", borderRadius:"99px" }}/>
-                <div className="progress-bar-fill" style={{ position:"absolute", height:"100%", width:`${Math.round((c/maxCal)*100)}%`, background:"var(--yellow)", borderRadius:"99px", boxShadow:"0 0 8px var(--yellow-glow)" }}/>
+            <div key={i} className="flex items-center gap-4 mb-3">
+              <div className="text-sm text-zinc-400 font-medium w-8">{dayNames[i]}</div>
+              <div className="flex-1 h-2 bg-zinc-800 rounded-full relative overflow-hidden">
+                <div className="absolute h-full bg-white/10 rounded-full" style={{ width:`${Math.round((plannedDayCals[i]/maxCal)*100)}%` }}/>
+                <div className="absolute h-full rounded-full bg-[#FFD166] shadow-[0_0_8px_rgba(255,209,102,0.6)] transition-all duration-500" style={{ width:`${Math.round((c/maxCal)*100)}%` }}/>
               </div>
-              <div className="text-xs text-yellow font-mono" style={{ width:"70px", textAlign:"right" }}>{c} / {plannedDayCals[i]}</div>
+              <div className="text-[11px] text-[#FFD166] font-bold w-14 text-right">{c} / {plannedDayCals[i]}</div>
             </div>
           ))}
-        </>)}
-        {card(<>
-          <div className="text-base font-semibold text-soft" style={{ marginBottom:"10px" }}>Bulk checkup</div>
+        </div>
+
+        <div className="bg-gradient-to-br from-[#1C1C26] to-[#1C1C26]/80 rounded-3xl p-5 mb-6 border border-white/5 shadow-xl">
+          <div className="text-[15px] font-bold text-white mb-4">Bulk checkup</div>
           {[
             { check:weeklyAvgP>=130, label:"Avg protein eaten ≥ 130g/day" },
             { check:weeklyAvgC>=2800, label:"Avg calories eaten ≥ 2800/day" },
             { check:weights.length>=2&&weights[weights.length-1].weight>weights[0].weight, label:"Weight going up" },
           ].map((c,i)=>(
-            <div key={i} className="flex items-center gap-3" style={{ padding:"8px 0", borderBottom:i<2?`1px solid var(--border-light)`:"none" }}>
-              <div className="flex items-center justify-center text-xs font-bold" style={{ width:"20px", height:"20px", borderRadius:"50%", background:c.check?'var(--green)':'var(--red)', color:"var(--bg-primary)", flexShrink:0, boxShadow:c.check?'0 0 8px var(--green-glow)':'' }}>{c.check?"✓":"!"}</div>
-              <span className={`text-sm ${c.check?'text-soft':'text-muted'}`}>{c.label}</span>
+            <div key={i} className={`flex items-center gap-3 py-3 ${i<2 ? 'border-b border-white/5' : ''}`}>
+              <div className={`flex items-center justify-center w-6 h-6 rounded-full flex-shrink-0 transition-all ${c.check ? 'bg-[#4BFF75]/20 text-[#4BFF75] border border-[#4BFF75]/50' : 'bg-red-500/20 text-red-400 border border-red-500/50'}`}>
+                {c.check ? <Check size={14} strokeWidth={3} /> : "!"}
+              </div>
+              <span className={`text-[13px] font-medium ${c.check ? 'text-white' : 'text-zinc-500'}`}>{c.label}</span>
             </div>
           ))}
-        </>)}
+        </div>
       </div>
     );
   };
@@ -720,37 +753,31 @@ export default function BulkApp() {
 
   // ── MODALS ───────────────────────────────────────────────────────────────
   const modalWrap = (children, onClose) => (
-    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", backdropFilter:"blur(6px)", WebkitBackdropFilter:"blur(6px)", display:"flex", alignItems:"flex-end", zIndex:100, transition:"all 0.3s" }} onClick={onClose}>
-      <div onClick={e=>e.stopPropagation()} style={{ background:"var(--bg-secondary)", border:`1px solid var(--border-color)`, borderBottom:"none", borderRadius:"24px 24px 0 0", width:"100%", padding:"24px 20px 40px", maxWidth:"420px", margin:"0 auto", maxHeight:"85vh", overflowY:"auto", boxShadow:"var(--shadow-lg)" }}>
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-end z-[100] transition-all duration-300" onClick={onClose}>
+      <div onClick={e=>e.stopPropagation()} className="bg-[#1C1C26] border border-white/10 border-b-0 rounded-t-[32px] w-full max-w-md mx-auto p-6 pb-12 max-h-[85vh] overflow-y-auto shadow-[0_-20px_40px_rgba(0,0,0,0.5)]">
+        <div className="w-12 h-1.5 bg-zinc-700 rounded-full mx-auto mb-6"></div>
         {children}
       </div>
     </div>
   );
 
   const pages = { home:<HomePage/>, water:<WaterPage/>, shopping:<ShoppingPage/>, weight:<WeightPage/>, summary:<SummaryPage/> };
-  const navItems = [
-    { key:"home", icon:"🏠", label:"Meals" },
-    { key:"water", icon:"💧", label:"Water" },
-    { key:"shopping", icon:"🛒", label:"Shop" },
-    { key:"weight", icon:"⚖️", label:"Weight" },
-    { key:"summary", icon:"📊", label:"Stats" },
-  ];
 
   return (
-    <div style={{ background:"var(--bg-primary)", minHeight:"100vh", color:"var(--text-main)", maxWidth:"420px", margin:"0 auto", position:"relative", paddingBottom:"100px" }}>
+    <div className="bg-black min-h-screen text-white w-full max-w-md mx-auto relative overflow-hidden">
       <Confetti active={showConfetti}/>
-      <div style={{ overflowY:"auto" }}>{pages[page]}</div>
+      <div className="h-full overflow-y-auto scrollbar-hide">{pages[page]}</div>
 
       {/* Skip Modal */}
       {skipModal !== null && modalWrap(<>
-        <div className="text-lg font-bold text-main" style={{ marginBottom:"4px" }}>Skipping {dayPlan[skipModal]?.label}?</div>
-        <div className="text-sm text-muted" style={{ marginBottom:"16px" }}>Cover up with one of these quick options 👇</div>
+        <div className="text-xl font-bold text-white mb-1">Skipping {dayPlan[skipModal]?.label}?</div>
+        <div className="text-sm text-zinc-400 mb-6">Cover up with one of these quick options 👇</div>
         {skipAlts.map((alt,i)=>(
-          <div key={i} onClick={()=>setSkipModal(null)} className="glass-panel flex items-center gap-3" style={{ padding:"12px 16px", marginBottom:"8px", cursor:"pointer", transition:"transform 0.2s" }}>
-            <span className="text-2xl">{alt.icon}</span>
+          <div key={i} onClick={()=>setSkipModal(null)} className="bg-[#11111A] border border-white/5 rounded-2xl p-4 flex items-center gap-4 mb-3 cursor-pointer active:scale-95 transition-all">
+            <span className="text-3xl">{alt.icon}</span>
             <div className="flex-1">
-              <div className="text-sm font-bold text-main">{alt.name}</div>
-              <div className="text-xs text-muted" style={{ marginTop:"2px" }}>{alt.protein}g protein · {alt.cal} kcal</div>
+              <div className="text-[15px] font-bold text-white mb-0.5">{alt.name}</div>
+              <div className="text-xs text-[#00F0FF] font-medium">{alt.protein}g protein <span className="text-zinc-500 mx-1">·</span> {alt.cal} kcal</div>
             </div>
           </div>
         ))}
@@ -758,18 +785,18 @@ export default function BulkApp() {
 
       {/* Swap Modal */}
       {swapModal !== null && modalWrap(<>
-        <div className="text-lg font-bold text-main" style={{ marginBottom:"4px" }}>Swap {swapModal.meal.label} 🔄</div>
-        <div className="text-sm text-muted" style={{ marginBottom:"16px" }}>Choose an alternative meal below</div>
+        <div className="text-xl font-bold text-white mb-1">Swap {swapModal.meal.label} 🔄</div>
+        <div className="text-sm text-zinc-400 mb-6">Choose an alternative meal below</div>
         {(swapPool[swapModal.meal.label]||swapPool["Dinner"]).map((swap,i)=>(
-          <div key={i} onClick={()=>applySwap(swapModal.dayIdx,swapModal.mealIdx,swap)} className="glass-panel" style={{ padding:"16px", marginBottom:"10px", cursor:"pointer", transition:"transform 0.2s" }}>
-            <div className="flex items-center gap-2" style={{ marginBottom:"8px" }}>
-              <span className="text-2xl">{swap.emoji}</span>
-              <span className="text-base font-bold text-main">{swap.label}</span>
+          <div key={i} onClick={()=>applySwap(swapModal.dayIdx,swapModal.mealIdx,swap)} className="bg-[#11111A] border border-white/5 rounded-2xl p-5 mb-4 cursor-pointer active:scale-95 transition-all">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-3xl">{swap.emoji}</span>
+              <span className="text-lg font-bold text-white">{swap.label}</span>
             </div>
-            <div className="text-sm text-muted" style={{ marginBottom:"10px" }}>{swap.items.join(" · ")}</div>
-            <div className="flex gap-2">
-              {[{l:"P",v:swap.protein+"g",c:"var(--green)"},{l:"C",v:swap.carbs+"g",c:"var(--yellow)"},{l:"F",v:swap.fats+"g",c:"var(--purple)"},{l:"kcal",v:swap.cal,c:"var(--text-soft)"}].map(m=>(
-                <div key={m.l} style={{ background:"var(--bg-primary)", borderRadius:"8px", padding:"4px 8px", fontSize:"11px", color:m.c, fontWeight:"600", border:"1px solid var(--border-light)" }}>{m.l}: {m.v}</div>
+            <div className="text-sm text-zinc-400 mb-4">{swap.items.join(" · ")}</div>
+            <div className="flex flex-wrap gap-2">
+              {[{l:"P",v:swap.protein+"g",c:"text-[#4BFF75]",bg:"bg-[#4BFF75]/10"},{l:"C",v:swap.carbs+"g",c:"text-[#FFD166]",bg:"bg-[#FFD166]/10"},{l:"F",v:swap.fats+"g",c:"text-[#FF2A7A]",bg:"bg-[#FF2A7A]/10"},{l:"kcal",v:swap.cal,c:"text-white",bg:"bg-white/10"}].map(m=>(
+                <div key={m.l} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${m.c} ${m.bg}`}>{m.l}: {m.v}</div>
               ))}
             </div>
           </div>
@@ -778,30 +805,34 @@ export default function BulkApp() {
 
       {/* Edit Modal */}
       {editModal !== null && editDraft && modalWrap(<>
-        <div className="text-lg font-bold text-main" style={{ marginBottom:"4px" }}>
+        <div className="text-xl font-bold text-white mb-1">
           ✏️ Edit {customPlan[editModal.dayIdx][editModal.mealIdx].label}
         </div>
-        <div className="text-sm text-muted" style={{ marginBottom:"16px" }}>{fullDayNames[editModal.dayIdx]}</div>
-        {lbl("FOOD ITEMS")}
-        {editDraft.items.map((item,i)=>(
-          <div key={i} className="flex gap-2" style={{ marginBottom:"8px" }}>
-            <input value={item} onChange={e=>{const arr=[...editDraft.items]; arr[i]=e.target.value; setEditDraft(p=>({...p,items:arr}));}} className="input-field flex-1" />
-            <button onClick={()=>setEditDraft(p=>({...p,items:p.items.filter((_,ii)=>ii!==i)}))} className="btn-secondary" style={{ padding:"10px 14px", color:"var(--red)", border:"none", background:"transparent" }}>×</button>
-          </div>
-        ))}
-        <button onClick={()=>setEditDraft(p=>({...p,items:[...p.items,""]}))} className="btn-secondary w-full" style={{ border:"1px dashed var(--border-color)", background:"transparent", marginBottom:"20px" }}>+ Add item</button>
-        {lbl("NUTRITION")}
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px", marginBottom:"24px" }}>
-          {[["protein","Protein (g)"],["cal","Calories"]].map(([k,label])=>(
-            <div key={k}>
-              <div className="text-xs text-muted" style={{ marginBottom:"6px" }}>{label}</div>
-              <input type="number" value={editDraft[k]} onChange={e=>setEditDraft(p=>({...p,[k]:parseInt(e.target.value)||0}))} className="input-field w-full" />
+        <div className="text-sm text-zinc-400 mb-6">{fullDayNames[editModal.dayIdx]}</div>
+        
+        <p className="text-xs text-zinc-500 font-bold tracking-widest uppercase mb-3">Food Items</p>
+        <div className="space-y-3 mb-4">
+          {editDraft.items.map((item,i)=>(
+            <div key={i} className="flex gap-2">
+              <input value={item} onChange={e=>{const arr=[...editDraft.items]; arr[i]=e.target.value; setEditDraft(p=>({...p,items:arr}));}} className="flex-1 bg-[#11111A] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00F0FF]/50 transition-colors" />
+              <button onClick={()=>setEditDraft(p=>({...p,items:p.items.filter((_,ii)=>ii!==i)}))} className="w-12 flex items-center justify-center rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors">×</button>
             </div>
           ))}
         </div>
-        <div className="flex gap-2">
-          <button onClick={saveEdit} className="btn-primary flex-1">Save</button>
-          <button onClick={()=>setEditModal(null)} className="btn-secondary flex-1" style={{ background:"transparent" }}>Cancel</button>
+        <button onClick={()=>setEditDraft(p=>({...p,items:[...p.items,""]}))} className="w-full py-3 rounded-xl border border-dashed border-zinc-600 text-zinc-400 font-medium hover:text-white hover:border-zinc-400 transition-colors mb-8">+ Add item</button>
+        
+        <p className="text-xs text-zinc-500 font-bold tracking-widest uppercase mb-3">Nutrition</p>
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          {[["protein","Protein (g)"],["cal","Calories"]].map(([k,label])=>(
+            <div key={k}>
+              <div className="text-xs text-zinc-400 font-medium mb-2">{label}</div>
+              <input type="number" value={editDraft[k]} onChange={e=>setEditDraft(p=>({...p,[k]:parseInt(e.target.value)||0}))} className="w-full bg-[#11111A] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00F0FF]/50 transition-colors" />
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-3">
+          <button onClick={saveEdit} className="flex-1 bg-[#00F0FF] text-black font-bold py-4 rounded-xl shadow-[0_0_15px_rgba(0,240,255,0.3)] active:scale-95 transition-transform">Save</button>
+          <button onClick={()=>setEditModal(null)} className="flex-1 bg-[#11111A] text-white font-bold py-4 rounded-xl border border-white/10 active:scale-95 transition-transform">Cancel</button>
         </div>
       </>, ()=>setEditModal(null))}
 

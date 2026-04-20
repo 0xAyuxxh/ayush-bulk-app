@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import BulkTrackerDashboard from './BulkDashboardUI.jsx'
+import BulkApp from './BulkApp.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BulkTrackerDashboard />
+    <BulkApp />
   </StrictMode>,
 )

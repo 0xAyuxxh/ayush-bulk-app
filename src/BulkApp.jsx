@@ -645,12 +645,12 @@ export default function BulkApp() {
           <div className="bg-[#1C1C26] rounded-3xl p-5 border border-white/5 shadow-xl relative overflow-hidden flex items-center">
             <div className="w-12 h-16 relative flex items-center justify-center mr-3">
                <div className="absolute w-12 h-12 bg-[#00F0FF] rounded-full blur-xl opacity-20"></div>
-               <Droplet size={32} className="text-[#00F0FF] drop-shadow-lg" fill="#00F0FF" fillOpacity={0.4} strokeWidth={1.5} />
+               <Droplet size={32} className="text-[#00F0FF] drop-shadow-lg" strokeWidth={1.5} />
             </div>
             <div>
               <p className="text-xs text-zinc-400 font-medium mb-0.5">Water</p>
-              <p className="text-2xl font-bold text-white leading-tight">{todayWater}</p>
-              <p className="text-[10px] text-zinc-500 font-medium">0 of 3000ml</p>
+              <p className="text-2xl font-bold text-white leading-tight">{todayWater}ml</p>
+              <p className="text-[10px] text-zinc-500 font-medium">{todayWater} of 3000ml</p>
             </div>
             <div className="absolute right-4 top-4 bottom-4 w-2 bg-zinc-800 rounded-full overflow-hidden">
               <div className="absolute bottom-0 w-full bg-gradient-to-t from-[#00F0FF] to-[#4BFF75] rounded-full transition-all duration-500" style={{ height: `${Math.min((todayWater/3000)*100, 100)}%` }}></div>
@@ -687,61 +687,110 @@ export default function BulkApp() {
           <div className="space-y-4">
             {dayPlan.map((meal, i) => {
               const done = !!(dayChecked[i]);
-              const imgUrl = meal.img || "https://images.unsplash.com/photo-1554520735-0a6b8b6ce8b7?auto=format&fit=crop&w=150&q=80";
+              const isExpanded = expandedMeal === i;
               return (
-                <div 
-                  key={i} 
-                  className={`relative overflow-hidden flex items-center p-3.5 rounded-3xl transition-all duration-500 ${
-                    done 
-                      ? 'bg-gradient-to-r from-[#4BFF75]/20 to-[#4BFF75]/5 border border-[#4BFF75]/30 shadow-[0_0_20px_rgba(75,255,117,0.1)]' 
+                <div
+                  key={i}
+                  className={`relative overflow-hidden rounded-3xl transition-all duration-500 ${
+                    done
+                      ? 'bg-gradient-to-r from-[#4BFF75]/20 to-[#4BFF75]/5 border border-[#4BFF75]/30 shadow-[0_0_20px_rgba(75,255,117,0.1)]'
                       : 'bg-[#1C1C26] border border-white/5 shadow-lg'
                   }`}
                 >
-                  <img src={imgUrl} alt={meal.label} className="w-16 h-16 rounded-2xl object-cover bg-zinc-800 shadow-inner" />
-                  
-                  <div className="ml-4 flex-1">
-                    <div className="flex items-center mb-1">
-                      <h3 className={`text-[15px] font-bold ${done ? 'text-white' : 'text-white'}`}>{meal.label}</h3>
-                      <span className={`ml-2 text-[10px] font-semibold ${done ? 'text-[#4BFF75]' : 'text-zinc-500'}`}>
-                        {done ? '(COMPLETED)' : '(Pending)'}
-                      </span>
+                  {/* Main row — tap to expand */}
+                  <div
+                    className="flex items-center p-3.5 cursor-pointer"
+                    onClick={() => setExpandedMeal(isExpanded ? null : i)}
+                  >
+                    <div className="w-16 h-16 rounded-2xl bg-zinc-800 shadow-inner flex items-center justify-center text-3xl flex-shrink-0">
+                      {meal.emoji}
                     </div>
-                    <div className="flex gap-4">
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-5 h-5 rounded-full bg-red-500/10 flex items-center justify-center border border-red-500/20">
-                          <Beef size={10} className="text-red-400" />
+
+                    <div className="ml-4 flex-1 min-w-0">
+                      <div className="flex items-center mb-1">
+                        <h3 className="text-[15px] font-bold text-white">{meal.label}</h3>
+                        <span className={`ml-2 text-[10px] font-semibold ${done ? 'text-[#4BFF75]' : 'text-zinc-500'}`}>
+                          {done ? '✓ DONE' : meal.time}
+                        </span>
+                      </div>
+                      <div className="flex gap-4">
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-5 h-5 rounded-full bg-red-500/10 flex items-center justify-center border border-red-500/20">
+                            <Beef size={10} className="text-red-400" />
+                          </div>
+                          <div>
+                            <p className="text-[9px] text-zinc-500 font-medium">Protein</p>
+                            <p className={`text-xs font-bold ${done ? 'text-[#4BFF75]/80' : 'text-white'}`}>{meal.protein}g</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-[9px] text-zinc-500 font-medium">Protein</p>
-                          <p className={`text-xs font-bold ${done ? 'text-[#4BFF75]/80' : 'text-white'}`}>{meal.protein}g</p>
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-5 h-5 rounded-full bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
+                            <Flame size={10} className="text-orange-400" />
+                          </div>
+                          <div>
+                            <p className="text-[9px] text-zinc-500 font-medium">Calories</p>
+                            <p className={`text-xs font-bold ${done ? 'text-[#4BFF75]/80' : 'text-white'}`}>{meal.cal}</p>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-5 h-5 rounded-full bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
-                          <Flame size={10} className="text-orange-400" />
+                    </div>
+
+                    <div className="ml-2 pr-1 flex-shrink-0">
+                      {done ? (
+                        <div
+                          onClick={(e) => { e.stopPropagation(); toggleMeal(i); }}
+                          className="w-8 h-8 rounded-full bg-[#4BFF75] flex items-center justify-center shadow-[0_0_15px_rgba(75,255,117,0.4)] cursor-pointer hover:scale-105 transition-transform"
+                        >
+                          <Check size={18} className="text-black" strokeWidth={3} />
                         </div>
-                        <div>
-                          <p className="text-[9px] text-zinc-500 font-medium">Calories</p>
-                          <p className={`text-xs font-bold ${done ? 'text-[#4BFF75]/80' : 'text-white'}`}>{meal.cal}</p>
-                        </div>
-                      </div>
+                      ) : (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); toggleMeal(i); }}
+                          className="relative inline-flex h-[26px] w-[44px] items-center rounded-full bg-zinc-700/50 border border-white/5 transition-colors duration-300 focus:outline-none"
+                        >
+                          <span className="inline-block h-5 w-5 transform rounded-full bg-zinc-400 translate-x-1 transition-transform duration-300 shadow-md" />
+                        </button>
+                      )}
                     </div>
                   </div>
 
-                  <div className="ml-2 pr-2">
-                    {done ? (
-                      <div onClick={() => toggleMeal(i)} className="w-8 h-8 rounded-full bg-[#4BFF75] flex items-center justify-center shadow-[0_0_15px_rgba(75,255,117,0.4)] cursor-pointer hover:scale-105 transition-transform">
-                        <Check size={18} className="text-black" strokeWidth={3} />
+                  {/* Expanded detail panel */}
+                  {isExpanded && (
+                    <div className="px-4 pb-4 border-t border-white/5">
+                      <div className="py-3 space-y-1.5 mb-3">
+                        {meal.items.map((item, j) => (
+                          <div key={j} className="flex items-start gap-2 text-sm text-zinc-300">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#00F0FF] flex-shrink-0 mt-2"></div>
+                            <span>{item}</span>
+                          </div>
+                        ))}
                       </div>
-                    ) : (
-                      <button 
-                        onClick={() => toggleMeal(i)}
-                        className="relative inline-flex h-[26px] w-[44px] items-center rounded-full bg-zinc-700/50 border border-white/5 transition-colors duration-300 focus:outline-none"
-                      >
-                        <span className="inline-block h-5 w-5 transform rounded-full bg-zinc-400 translate-x-1 transition-transform duration-300 shadow-md" />
-                      </button>
-                    )}
-                  </div>
+                      <div className="flex gap-2 mb-4 flex-wrap">
+                        {[
+                          { l:"Protein", v:`${meal.protein}g`, c:"text-[#4BFF75]", bg:"bg-[#4BFF75]/10" },
+                          { l:"Carbs", v:`${meal.carbs||0}g`, c:"text-[#FFD166]", bg:"bg-[#FFD166]/10" },
+                          { l:"Fats", v:`${meal.fats||0}g`, c:"text-[#FF2A7A]", bg:"bg-[#FF2A7A]/10" },
+                          { l:"kcal", v:`${meal.cal}`, c:"text-white", bg:"bg-white/10" },
+                        ].map(m => (
+                          <div key={m.l} className={`px-3 py-1 rounded-lg text-xs font-bold ${m.c} ${m.bg}`}>{m.l}: {m.v}</div>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => { setSkipModal(i); setExpandedMeal(null); }}
+                          className="flex-1 py-2.5 rounded-xl text-xs font-bold text-zinc-400 border border-zinc-700 hover:bg-zinc-800 transition-colors"
+                        >⏭ Skip</button>
+                        <button
+                          onClick={() => { setSwapModal({ dayIdx: activeDay, mealIdx: i, meal }); setExpandedMeal(null); }}
+                          className="flex-1 py-2.5 rounded-xl text-xs font-bold text-[#00F0FF] border border-[#00F0FF]/30 bg-[#00F0FF]/5 hover:bg-[#00F0FF]/10 transition-colors"
+                        >🔄 Swap</button>
+                        <button
+                          onClick={() => { openEdit(activeDay, i); setExpandedMeal(null); }}
+                          className="flex-1 py-2.5 rounded-xl text-xs font-bold text-[#FFD166] border border-[#FFD166]/30 bg-[#FFD166]/5 hover:bg-[#FFD166]/10 transition-colors"
+                        >✏️ Edit</button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
